@@ -1,0 +1,65 @@
+
+print "Content-Type: text/css\n\n";
+
+print <<'EOF';
+
+html {
+    background-color: #2e3436;
+    color: #eeeeec;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.5em;
+    padding: 10px;
+    margin: 30px 0 45px;
+    color: #edd400;
+    font-family: serif;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+fieldset {
+    border: 2px solid white;
+    padding: 2em;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+legend {
+    border: 2px solid white;
+    font-weight: bold;
+    color: #73d216;
+    padding: 3px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 2px solid white;
+    vertical-align: top;
+    padding: 5px;
+}
+
+th {
+    font-weight: bold;
+    color: #73d216;
+}
+
+tr.oddrow {
+    background: #729fcf;
+    color: black;
+}
+
+hr {
+    margin: 50px 50px 10px;
+}
+
+hr + p {
+    color: #888a85;
+}
+
+EOF
