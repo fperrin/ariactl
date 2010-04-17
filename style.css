@@ -44,6 +44,11 @@ td, th {
     padding: 5px;
 }
 
+td p, td dl {
+    margin: 5px;
+    padding: 0;
+}
+
 th {
     font-weight: bold;
     color: #73d216;
@@ -54,12 +59,25 @@ tr.oddrow {
     color: black;
 }
 
+tr.evenrow {
+    background: #2e3436;
+    color: #eeeeec;
+}
+
 hr {
     margin: 50px 50px 10px;
 }
 
 hr + p {
     color: #888a85;
+}
+
+dl > dd {
+    display: none;
+}
+
+dl:active > dd {
+    display: block;
 }
 
 EOF

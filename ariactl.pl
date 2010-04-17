@@ -52,6 +52,7 @@ my $ariaurl = <ARIAURL>;
 close ARIAURL;
 my $ariactl = Frontier::Client->new(url => $ariaurl);
 
+binmode STDOUT, ':utf8';
 print header(),
     start_html(-title => "Aria Control",
 	       -style => { -src => "/style.css" },
