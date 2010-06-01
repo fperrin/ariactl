@@ -10,6 +10,7 @@ use Net::INET6Glue::INET_is_INET6;
 use Frontier::Client;
 use Tie::IxHash;
 
+use Number::Format qw/:subs/;
 use Data::Dumper;
 
 sub show_dl {
@@ -28,10 +29,10 @@ sub show_dl {
 	    my $progress;
 	    if ($dl->{totalLength}) {
 		$progress = sprintf(
-		    "%.2f%% (%d/%d)",
+		    "%.2f%% (%s/%s)",
 		    100*$dl->{completedLength} / $dl->{totalLength},
-		    $dl->{completedLength},
-		    $dl->{totalLength});
+		    format_bytes($dl->{completedLength}),
+		    format_bytes($dl->{totalLength}));
 	    } else {
 		$progress = "n/a";
 	    }
