@@ -24,8 +24,9 @@ sub show_dl {
 	    $odd = !$odd;
 
 	    my ($basedir) = ($dl->{files}[0]{path} =~ m#^(.*)/#);
-	    print td(dl(dt($basedir),
-			map({ +dd($_->{path}) } @{$dl->{files}})));
+	    print td(dl(dt({ -onClick => "toggle(".$dl->{gid}.")" }, $basedir),
+			map({ +dd({-id => $dl->{gid}}, $_->{path}) }
+			    @{$dl->{files}})));
 	    my $progress;
 	    if ($dl->{totalLength}) {
 		$progress = sprintf(
@@ -57,6 +58,7 @@ binmode STDOUT, ':utf8';
 print header(),
     start_html(-title => "Aria Control",
 	       -style => { -src => "/style.css" },
+	       -script => { -src => "/behaviour.js" },
 	       -encoding => "UTF-8");
 
 my $v;
