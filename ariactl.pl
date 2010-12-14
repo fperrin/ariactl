@@ -46,7 +46,6 @@ sub show_dl {
     } else {
 	print p("No downloads");
     }
-    print comment(Dumper $dls);
 }
 
 open ARIAURL, "/usr/local/www/cmd/ariaurl.txt";
@@ -127,12 +126,14 @@ foreach my $title (keys %methods) {
     show_dl $dls;
 }
 
-#print comment(Dumper $dls);
-
 print hr(),
     p(sprintf "Version: %s, features: %s\n",
-      $v->{version},
-      join(", ", @{$v->{enabledFeatures}}));
+        $v->{version},
+        join(", ", @{$v->{enabledFeatures}}));
+
+my $options = $ariactl->call("aria2.getGlobalOption");
+print p("Options: "),
+    table(map { Tr(td[$_, $options->{$_}]) if !/passwd/; } keys %$options);
 
 print end_html();
 
