@@ -54,6 +54,13 @@ my $ariaurl = <ARIAURL>;
 close ARIAURL;
 my $ariactl = Frontier::Client->new(url => $ariaurl);
 
+# There are also log and log-level, not sure how useful these are in a Web
+# interface. Another option may be to call getGlobalOption to retreive
+# this list.
+my %ariaopts = ("max-concurrent-downloads" => "Max simultaneous downloads",
+	        "max-overall-download-limit" => "Download bandwidth limit",
+	        "max-overall-upload-limit" => "Upload bandwith limit");
+
 binmode STDOUT, ':utf8';
 print header(),
     start_html(-title => "Aria Control",
@@ -82,11 +89,31 @@ print h1("Aria Control"),
 	     submit()),
     end_form();
 
+print
+    start_form(),
+    fieldset(legend("Aria2c options"),
+             "Option: ",
+             popup_menu(-name => "optname", -values => [keys %ariaopts],
+			-labels => \%ariaopts), br(),
+             "Value: ",
+             textfield(-name => "optval"), br(),
+             submit()),
+    end_form();
+
 if (my $url = param("url") and
     my $dir = param("dir")) {
     print p("Adding $url to the download list, ouputting to $dir...");
-    my $gid = $ariactl->call("aria2.addUri", [$url], {dir => $dir});
+    my $gid;
+    $gid = $ariactl->call("aria2.addUri", [$url], {dir => $dir});
     print p("Added to the queue as $gid");
+}
+
+if (my $optname = param("optname") and
+    my $optval = param("optval")) {
+    print p("Setting $optname to $optval...");
+    my $resp = $ariactl->call("aria2.changeGlobalOption",
+			      {$optname => $optval});
+    print p("Aria2c said $resp.");
 }
 
 tie my %methods => 'Tie::IxHash',
