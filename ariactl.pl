@@ -1,9 +1,11 @@
+#!/usr/local/bin/perl5
+
+use diagnostics;
 use strict;
 use warnings;
-use diagnostics;
 
-#use CGI qw/:standard *table *Tr *td/;
-use CGI::Pretty qw/ :standard *table *Tr *td/;
+use CGI qw/:standard *table *Tr *td/;
+#use CGI::Pretty qw/ :standard *table *Tr *td/;
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 
 use Net::INET6Glue::INET_is_INET6;
@@ -12,6 +14,19 @@ use Tie::IxHash;
 
 use Number::Format qw/:subs/;
 use Data::Dumper;
+
+# There are also log and log-level, not sure how useful these are in a Web
+# interface. Another option may be to call getGlobalOption to retreive
+# this list. No: getGlobalOption returns way too many options (including many
+# that can't be modified from the XML-RPC interface).
+our %ariaopts = ("max-concurrent-downloads" => "Max simultaneous downloads",
+	        "max-overall-download-limit" => "Overall d/l bandwidth limit",
+	        "max-overall-upload-limit" => "Overall u/l bandwidth limit");
+
+our %ariadlopts = ("max-download-limit" => "D/L bandwidth limit",
+		  "max-upload-limit" => "U/L bandwidth limit",
+		  "bt-max-peers" => "Max nb. of peers",
+		  "bt-request-peer-speed-limit" => "Lower peer speed limit");
 
 sub show_dl {
     my $dls = shift;
@@ -37,9 +52,15 @@ sub show_dl {
 	    } else {
 		$progress = "n/a";
 	    }
-	    print td(p($dl->{status})),
+	    print td(p($dl->{status}),
+		     start_form(),
+		     popup_menu(-name => "dloptname", -values => [keys %ariadlopts],
+				-labels => \%ariadlopts),
+		     textfield(-name => "dloptval"),
+		     hidden(-name => "dlid",
+			    -default => $dl->{gid}),
+		     end_form()),
 	          td(p($progress));
-
 	    print end_Tr();
 	}
 	print end_table();
@@ -52,13 +73,6 @@ open ARIAURL, "/usr/local/www/cmd/ariaurl.txt";
 my $ariaurl = <ARIAURL>;
 close ARIAURL;
 my $ariactl = Frontier::Client->new(url => $ariaurl);
-
-# There are also log and log-level, not sure how useful these are in a Web
-# interface. Another option may be to call getGlobalOption to retreive
-# this list.
-my %ariaopts = ("max-concurrent-downloads" => "Max simultaneous downloads",
-	        "max-overall-download-limit" => "Download bandwidth limit",
-	        "max-overall-upload-limit" => "Upload bandwith limit");
 
 binmode STDOUT, ':utf8';
 print header(),
@@ -112,6 +126,15 @@ if (my $optname = param("optname") and
     print p("Setting $optname to $optval...");
     my $resp = $ariactl->call("aria2.changeGlobalOption",
 			      {$optname => $optval});
+    print p("Aria2c said $resp.");
+}
+
+if (my $dlid = param("dlid") and
+    my $optname = param("dloptname") and
+    my $optval = param("dloptval")) {
+    print p("Setting $optname to $optval for download $dlid...");
+    my $resp = $ariactl->call("aria2.changeOption",
+			      $ariactl->string($dlid), {$optname => $optval});
     print p("Aria2c said $resp.");
 }
 
