@@ -13,6 +13,7 @@ use Frontier::Client;
 use Tie::IxHash;
 
 use Number::Format qw/:subs/;
+use File::Basename;
 use Data::Dumper;
 
 # There are also log and log-level, not sure how useful these are in a Web
@@ -69,7 +70,8 @@ sub show_dl {
     }
 }
 
-open ARIAURL, "/usr/local/www/cmd/ariaurl.txt";
+
+open ARIAURL, dirname($ENV{"SCRIPT_FILENAME"}) . "/ariaurl.txt";
 my $ariaurl = <ARIAURL>;
 close ARIAURL;
 my $ariactl = Frontier::Client->new(url => $ariaurl);
