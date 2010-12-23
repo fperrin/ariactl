@@ -1,0 +1,51 @@
+ariactl -- une interface Web pour aria2
+
+* Description
+
+Il s'agit d'un petit script Perl, qui utilise =Frontier::Client= pour
+communiquer en [[http://www.xmlrpc.com/][XML-RPC]] avec une instance d'[[http://aria2.sourceforge.net/][=aria2=]].
+
+Ce script fournit une page pour ajouter des téléchargements à la queue
+d'=aria2=, voir la liste des téléchargement en cours, terminés et en
+attente, et modifier quelques options d'=aria2=.
+
+Notez dans ce script l'utilisation de =Net::INET6Glue=, afin de pouvoir
+communiquer en IPv6 avec =aria2=. Ce module écrase la table des symboles de
+=IO::Socket::INET= par celle de =IO::Socket::INET6= (qui est compatible au
+niveau de l'API, mais fournit un support transparent d'IPv4 ou d'IPv6).
+
+L'utilisation est simple, coller =ariactl.pl= et les deux fichiers CSS
+/ JS dans un répertoire qui est sous le contrôle de =mod_perl2=.
+=ariactl.pl= lit un fichier texte, =ariaurl.txt=, pour trouver la
+bonne URL à utiliser pour se connecter au server XML-RPC d'=aria2=.
+
+L'URL à utiliser ressemblera à quelque chose comme :
+
+    : http://utilisateur:motdepasse@machine.example.org:6800/rpc
+
+Modules utilisés :
+
+- [[http://search.cpan.org/~kmacleod/Frontier-RPC-0.07b4/][Frontier::RPC]]
+- [[http://search.cpan.org/~wrw/Number-Format-1.73/][Number::Format]]
+- [[http://search.cpan.org/~chorny/Tie-IxHash-1.22/][Tie::IxHash]]
+- [[http://search.cpan.org/~sullr/Net-INET6Glue-0.4/][Net::INET6Glue]]
+
+* English description
+
+This is a small Perl script that uses using =Frontier::Client= to
+communicate in XML-RPC with an instance of [[http://aria2.sourceforge.net/][=aria2=]].
+
+It provides a webpage to add downloads to =aria2=, get the list of finished
+and waiting downloads, and change some options of =aria2=.
+
+Note in this script the use of =Net::INET6Glue=, in order to allow
+contacting =aria2= over IPv6.
+
+Installation is easy: stuff =arialctl.pl= and the two CSS / JS files in a
+directory under the control of =mod_perl=. The script reads a text file,
+=ariaurl.txt=, in order to find the URL to use to contact =aria2='s XML-RPC
+server.
+
+The URL to use will look like this:
+
+    : http://user:password@machine.example.org:6800/rpc
