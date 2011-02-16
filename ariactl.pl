@@ -39,9 +39,11 @@ sub show_dl {
             print start_Tr({-class => ($odd ? "oddrow" : "evenrow")});
             $odd = !$odd;
 
-            my ($basedir) = ($dl->{files}[0]{path} =~ m#^(.*)/#);
-            print td(dl(dt({ -onClick => "toggle(".$dl->{gid}.")" }, $basedir),
-                        map({ +dd({-id => $dl->{gid}}, $_->{path}) }
+            my ($basedir, $basename) = ($dl->{files}[0]{path} =~ m#^(.*)/(.*?)$#);
+            # The filename being downloaded, with the details hidden by default,
+            # viewable by clicking on the filename
+            print td(dl(dt({ -onClick => "toggle(".$dl->{gid}.")" }, escapeHTML($basename)),
+                        map({ +dd({-id => $dl->{gid}}, escapeHTML($_->{path})) }
                             @{$dl->{files}})));
             my $progress;
             if ($dl->{totalLength}) {
@@ -144,6 +146,7 @@ tie my %methods => 'Tie::IxHash',
     "Finished Downloads" => "aria2.tellStopped",
     "Waiting Downloads" => "aria2.tellWaiting",
     ;
+
 foreach my $title (keys %methods) {
     my $dls = $ariactl->call($methods{$title}, 0, 50);
     print h1($title);
