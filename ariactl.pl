@@ -118,7 +118,8 @@ print
 
 if (my $url = param("url") and
     my $dir = param("dir")) {
-    print p("Adding $url to the download list, ouputting to $dir...");
+    print p("Adding ", escapeHTML($url), " to the download list, ouputting to ",
+        escapeHTML($dir), "...");
     my $gid;
     $gid = $ariactl->call("aria2.addUri", [$url], {dir => $dir});
     print p("Added to the queue as $gid");
@@ -126,7 +127,8 @@ if (my $url = param("url") and
 
 if (my $optname = param("optname") and
     my $optval = param("optval")) {
-    print p("Setting $optname to $optval...");
+    print p("Setting ", escpaceHTML($optname), " to ",
+        escapeHTML($optval), "...");
     my $resp = $ariactl->call("aria2.changeGlobalOption",
                               {$optname => $optval});
     print p("Aria2c said $resp.");
@@ -135,7 +137,8 @@ if (my $optname = param("optname") and
 if (my $dlid = param("dlid") and
     my $optname = param("dloptname") and
     my $optval = param("dloptval")) {
-    print p("Setting $optname to $optval for download $dlid...");
+    print p("Setting ", escapeHTML($optname), " to ", escapeHTML($optval),
+        " for download ", escapeHTML($dlid), "...");
     my $resp = $ariactl->call("aria2.changeOption",
                               $ariactl->string($dlid), {$optname => $optval});
     print p("Aria2c said $resp.");
