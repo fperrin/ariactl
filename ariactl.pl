@@ -95,10 +95,10 @@ if ($@) {
     exit 0;
 }
 
-print h1("Aria Control"),
+print h1("aria2 Control"),
     start_form(),
     fieldset(legend("Add downloads"),
-             "URL to add to the queue of Aria: ",
+             "URL to add to the queue of aria2: ",
              textfield(-name => "url"), br(),
              "Output directory: ",
              textfield(-name => "dir", -value => "/storage"), br(),
@@ -107,7 +107,7 @@ print h1("Aria Control"),
 
 print
     start_form(),
-    fieldset(legend("Aria2c options"),
+    fieldset(legend("aria2 options"),
              "Option: ",
              popup_menu(-name => "optname", -values => [keys %ariaopts],
                         -labels => \%ariaopts), br(),
@@ -131,7 +131,7 @@ if (my $optname = param("optname") and
         escapeHTML($optval), "...");
     my $resp = $ariactl->call("aria2.changeGlobalOption",
                               {$optname => $optval});
-    print p("Aria2c said $resp.");
+    print p("aria2 said $resp.");
 }
 
 if (my $dlid = param("dlid") and
@@ -141,7 +141,7 @@ if (my $dlid = param("dlid") and
         " for download ", escapeHTML($dlid), "...");
     my $resp = $ariactl->call("aria2.changeOption",
                               $ariactl->string($dlid), {$optname => $optval});
-    print p("Aria2c said $resp.");
+    print p("aria2 said $resp.");
 }
 
 tie my %methods => 'Tie::IxHash',
