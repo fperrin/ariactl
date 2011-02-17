@@ -118,8 +118,11 @@ print
 
 if (my $url = param("url") and
     my $dir = param("dir")) {
-    print p("Adding ", escapeHTML($url), " to the download list, ouputting to ",
-        escapeHTML($dir), "...");
+    if ($dir !~ m#^/[a-zA-Z0-9/ -_]+#) {
+        die(p(escapeHTML($dir), " is not a valid path.");
+    }
+    print p("Adding ", escapeHTML($url), " to the download list,",
+        "ouputting to $dir...");
     my $gid;
     $gid = $ariactl->call("aria2.addUri", [$url], {dir => $dir});
     print p("Added to the queue as $gid");
