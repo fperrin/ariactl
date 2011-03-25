@@ -119,7 +119,7 @@ print
 if (my $url = param("url") and
     my $dir = param("dir")) {
     if ($dir !~ m#^/[a-zA-Z0-9/ -_]+#) {
-        die(p(escapeHTML($dir), " is not a valid path.");
+        die(p(escapeHTML($dir), " is not a valid path."));
     }
     print p("Adding ", escapeHTML($url), " to the download list,",
         "ouputting to $dir...");
@@ -130,7 +130,7 @@ if (my $url = param("url") and
 
 if (my $optname = param("optname") and
     my $optval = param("optval")) {
-    print p("Setting ", escpaceHTML($optname), " to ",
+    print p("Setting ", escapeHTML($optname), " to ",
         escapeHTML($optval), "...");
     my $resp = $ariactl->call("aria2.changeGlobalOption",
                               {$optname => $optval});
