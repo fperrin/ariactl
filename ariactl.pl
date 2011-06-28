@@ -31,45 +31,47 @@ our %ariadlopts = ("max-download-limit" => "D/L bandwidth limit",
 
 sub show_dl {
     my $dls = shift;
-    if (scalar @$dls) {
-        my $odd = 1;
-        print start_table();
-        print Tr(th(["Filename", "Status", "Progress"]));
-        foreach my $dl (@$dls) {
-            print start_Tr({-class => ($odd ? "oddrow" : "evenrow")});
-            $odd = !$odd;
-
-            my ($basedir, $basename) = ($dl->{files}[0]{path} =~ m#^(.*)/(.*?)$#);
-            # The filename being downloaded, with the details hidden by default,
-            # viewable by clicking on the filename
-            print td(dl(dt({ -onClick => "toggle(".$dl->{gid}.")" }, escapeHTML($basename)),
-                        map({ +dd({-id => $dl->{gid}}, escapeHTML($_->{path})) }
-                            @{$dl->{files}})));
-            my $progress;
-            if ($dl->{totalLength}) {
-                $progress = sprintf(
-                    "%.2f%% (%s/%s)",
-                    100*$dl->{completedLength} / $dl->{totalLength},
-                    format_bytes($dl->{completedLength}),
-                    format_bytes($dl->{totalLength}));
-            } else {
-                $progress = "n/a";
-            }
-            print td(p($dl->{status}),
-                     start_form(),
-                     popup_menu(-name => "dloptname", -values => [keys %ariadlopts],
-                                -labels => \%ariadlopts),
-                     textfield(-name => "dloptval"),
-                     hidden(-name => "dlid",
-                            -default => $dl->{gid}),
-                     end_form()),
-                  td(p($progress));
-            print end_Tr();
-        }
-        print end_table();
-    } else {
+    if (not scalar @$dls) {
         print p("No downloads");
+        return;
     }
+
+    my $odd = 1;
+    print start_table();
+    print Tr(th(["Filename", "Status", "Progress"]));
+    foreach my $dl (@$dls) {
+        print start_Tr({-class => ($odd ? "oddrow" : "evenrow")});
+        $odd = !$odd;
+
+        my ($basedir, $basename) = ($dl->{files}[0]{path} =~ m#^(.*)/(.*?)$#);
+        # The filename being downloaded, with the details hidden by default,
+        # viewable by clicking on the filename
+        print td(dl(dt({ -onClick => "toggle(".$dl->{gid}.")" },
+                       escapeHTML($basename)),
+                    map({ +dd({-id => $dl->{gid}}, escapeHTML($_->{path})) }
+                        @{$dl->{files}})));
+        my $progress;
+        if ($dl->{totalLength}) {
+            $progress = sprintf(
+                "%.2f%% (%s/%s)",
+                100*$dl->{completedLength} / $dl->{totalLength},
+                format_bytes($dl->{completedLength}),
+                format_bytes($dl->{totalLength}));
+        } else {
+	    $progress = "n/a";
+	}
+	print td(p($dl->{status}),
+                 start_form(),
+                 popup_menu(-name => "dloptname", -values => [keys %ariadlopts],
+                            -labels => \%ariadlopts),
+                 textfield(-name => "dloptval"),
+                 hidden(-name => "dlid",
+                        -default => $dl->{gid}),
+                 end_form()),
+              td(p($progress));
+        print end_Tr();
+    }
+    print end_table();
 }
 
 open ARIAURL, dirname($ENV{"SCRIPT_FILENAME"}) . "/ariaurl.txt";
