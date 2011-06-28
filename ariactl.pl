@@ -118,7 +118,7 @@ print
 
 if (my $url = param("url") and
     my $dir = param("dir")) {
-    if ($dir !~ m#^/[a-zA-Z0-9/ -_]+#) {
+    if ($dir !~ m#^/[a-zA-Z0-9/ -_]+$#) {
         die(p(escapeHTML($dir), " is not a valid path."));
     }
     print p("Adding ", escapeHTML($url), " to the download list,",
