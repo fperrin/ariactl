@@ -16,6 +16,12 @@ use Frontier::Client;
 
 use Data::Dumper;
 
+sub clean_die {
+    print map(p($_), @_),
+        end_html();
+    exit(0);
+}
+
 # There are also log and log-level, not sure how useful these are in a Web
 # interface. Another option may be to call getGlobalOption to retreive
 # this list. No: getGlobalOption returns way too many options (including many
@@ -74,11 +80,6 @@ sub show_dl {
     print end_table();
 }
 
-open ARIAURL, dirname($ENV{"SCRIPT_FILENAME"}) . "/ariaurl.txt";
-my $ariaurl = <ARIAURL>;
-close ARIAURL;
-my $ariactl = Frontier::Client->new(url => $ariaurl);
-
 binmode STDOUT, ':utf8';
 print header(),
     start_html(-title => "Aria Control",
@@ -86,15 +87,18 @@ print header(),
                -script => { -src => "/behaviour.js" },
                -encoding => "UTF-8");
 
+my $urlfilename = dirname($ENV{"SCRIPT_FILENAME"}) . "/ariaurl.txt";
+open my $urlfile, "<", $urlfilename or clean_die("Could not open the URL file at $urlfilename: $!.");
+my $ariaurl = <$urlfile>;
+close $urlfile;
+my $ariactl = Frontier::Client->new(url => $ariaurl);
+
 my $v;
 eval {
     $v = $ariactl->call("aria2.getVersion");
 };
 if ($@) {
-    print p("aria2 doesn't seem to be available..."),
-        p($@),
-        end_html();
-    exit 0;
+    clean_die("aria2 doesn't seem to be available...", $@),
 }
 
 print h1("aria2 Control"),
