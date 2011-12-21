@@ -153,14 +153,16 @@ if (my $dlid = param("dlid") and
     print p("aria2 said $resp.");
 }
 
+my @tellargs = qw/files gid totalLength completedLength status/;
+
 tie my %methods => 'Tie::IxHash',
-    "Current Downloads" => "aria2.tellActive",
-    "Finished Downloads" => "aria2.tellStopped",
-    "Waiting Downloads" => "aria2.tellWaiting",
+    "Current Downloads" => ["aria2.tellActive", \@tellargs],
+    "Finished Downloads" => ["aria2.tellStopped", 0, 50, \@tellargs],
+    "Waiting Downloads" => ["aria2.tellWaiting", 0, 50, \@tellargs],
     ;
 
 foreach my $title (keys %methods) {
-    my $dls = $ariactl->call($methods{$title}, 0, 50);
+    my $dls = $ariactl->call(@{$methods{$title}});
     print h1($title);
     show_dl $dls;
 }
