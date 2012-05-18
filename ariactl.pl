@@ -54,7 +54,7 @@ sub show_dl {
         # viewable by clicking on the filename
         print td(dl(dt({ -onClick => "toggle(".$dl->{gid}.")" },
                        escapeHTML($basename)),
-                    map({ +dd({-id => $dl->{gid}}, escapeHTML($_->{path})) }
+                    map({ +dd({-class => $dl->{gid}}, escapeHTML($_->{path})) }
                         @{$dl->{files}})));
         my $progress;
         if ($dl->{totalLength}) {
