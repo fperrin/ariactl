@@ -33,7 +33,8 @@ our %ariaopts = ("max-concurrent-downloads" => "Max simultaneous downloads",
 our %ariadlopts = ("max-download-limit" => "D/L bandwidth limit",
                    "max-upload-limit" => "U/L bandwidth limit",
                    "bt-max-peers" => "Max nb. of peers",
-                   "bt-request-peer-speed-limit" => "Lower peer speed limit");
+                   "bt-request-peer-speed-limit" => "Lower peer speed limit",
+                   "cancel" => "Cancel download");
 
 sub show_dl {
     my $dls = shift;
@@ -146,10 +147,18 @@ if (my $optname = param("optname") and
 if (my $dlid = param("dlid") and
     my $optname = param("dloptname") and
     my $optval = param("dloptval")) {
-    print p("Setting ", escapeHTML($optname), " to ", escapeHTML($optval),
-        " for download ", escapeHTML($dlid), "...");
-    my $resp = $ariactl->call("aria2.changeOption",
-                              $ariactl->string($dlid), {$optname => $optval});
+    my $resp;
+    if ($optname eq "cancel") {
+        print p("Putting download ".escapeHTML($dlid)." back to the waiting
+            queue...");
+        $resp = $ariactl->call("aria2.pause", $ariactl->string($dlid));
+	$resp .= " and ".$ariactl->call("aria2.unpause", $ariactl->string($dlid));
+    } else {
+        print p("Setting ", escapeHTML($optname), " to ", escapeHTML($optval),
+            " for download ", escapeHTML($dlid), "...");
+        $resp = $ariactl->call("aria2.changeOption",
+                               $ariactl->string($dlid), {$optname => $optval});
+    }
     print p("aria2 said $resp.");
 }
 
