@@ -53,7 +53,7 @@ sub show_dl {
         my ($basedir, $basename) = ($dl->{files}[0]{path} =~ m#^(.*)/(.*?)$#);
         # The filename being downloaded, with the details hidden by default,
         # viewable by clicking on the filename
-        print td(dl(dt({ -onClick => "toggle(".$dl->{gid}.")" },
+        print td(dl(dt({ -onClick => "toggle(\"".$dl->{gid}."\")" },
                        escapeHTML($basename)),
                     map({ +dd({-class => $dl->{gid}}, escapeHTML($_->{path})) }
                         @{$dl->{files}})));
