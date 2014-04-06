@@ -50,7 +50,10 @@ sub show_dl {
         print start_Tr({-class => ($odd ? "oddrow" : "evenrow")});
         $odd = !$odd;
 
-        my ($basedir, $basename) = ($dl->{files}[0]{path} =~ m#^(.*)/(.*?)$#);
+	my ($basedir, $basename) = ($dl->{files}[0]{path} =~ m#^(.*)/([^/]+)$#);
+	if (@{$dl->{files}} > 1 && $basedir =~ m#/#) {
+            ($basedir, $basename) = ($basedir =~  m#^(.*)/([^/]+)$#);
+}
         # The filename being downloaded, with the details hidden by default,
         # viewable by clicking on the filename
         print td(dl(dt({ -onClick => "toggle(\"".$dl->{gid}."\")" },
@@ -75,7 +78,7 @@ sub show_dl {
                  hidden(-name => "dlid",
                         -default => $dl->{gid}),
                  end_form()),
-              td(p($progress));
+              td p $progress;
         print end_Tr();
     }
     print end_table();
