@@ -1,54 +1,24 @@
-ariactl -- une interface Web pour aria2
-
-* Description
-
-Il s'agit d'un petit script Perl, qui utilise =Frontier::Client= pour
-communiquer en [[http://www.xmlrpc.com/][XML-RPC]] avec une instance d'[[http://aria2.sourceforge.net/][=aria2=]].
-
-Ce script fournit une page pour ajouter des téléchargements à la queue
-d'=aria2=, voir la liste des téléchargement en cours, terminés et en
-attente, et modifier quelques options d'=aria2=.
-
-Notez dans ce script l'utilisation de =Net::INET6Glue=, afin de pouvoir
-communiquer en IPv6 avec =aria2=. Ce module écrase la table des symboles de
-=IO::Socket::INET= par celle de =IO::Socket::INET6= (qui est compatible au
-niveau de l'API, mais fournit un support transparent d'IPv4 ou d'IPv6).
-
-L'utilisation est simple, coller =ariactl.pl= et les deux fichiers CSS
-/ JS dans un répertoire qui est sous le contrôle de =mod_perl2=.
-=ariactl.pl= lit un fichier texte, =ariaurl.txt=, pour trouver la
-bonne URL à utiliser pour se connecter au server XML-RPC d'=aria2=.
-
-L'URL à utiliser ressemblera à quelque chose comme :
-
-    : http://utilisateur:motdepasse@machine.example.org:6800/rpc
-
-Modules utilisés :
-
-- [[http://search.cpan.org/~kmacleod/Frontier-RPC-0.07b4/][Frontier::RPC]]
-- [[http://search.cpan.org/~wrw/Number-Format-1.73/][Number::Format]]
-- [[http://search.cpan.org/~chorny/Tie-IxHash-1.22/][Tie::IxHash]]
-- [[http://search.cpan.org/~sullr/Net-INET6Glue-0.4/][Net::INET6Glue]]
-
-La page principale de ce programme est [[http://tar-jx.bz/code/ariactl.html]].
-Voir aussi [[http://gitweb.fperrin.net/?p=ariactl.git;a=summary][l'interface gitweb]].
-
-* English description
+ariactl -- a Web interface for aria2
 
 This is a small Perl script that uses using =Frontier::Client= to
-communicate in XML-RPC with an instance of [[http://aria2.sourceforge.net/][=aria2=]].
+communicate over XML-RPC with an instance of [[http://aria2.sourceforge.net/][=aria2=]].
 
 It provides a webpage to add downloads to =aria2=, get the list of finished
 and waiting downloads, and change some options of =aria2=.
 
-Installation is easy: stuff =arialctl.pl= and the two CSS / JS files in a
-directory under the control of =mod_perl=. The script reads a text file,
-=ariaurl.txt=, in order to find the URL to use to contact =aria2='s XML-RPC
-server.
+Install =arialctl.pl= and the two CSS / JS files in a directory managed by
+=mod_perl=. The script does no user authentication, configure your webserver
+to limit access. Create a text file, =ariaurl.txt=, in order to find the URL
+to use to contact =aria2='s XML-RPC server.
 
 The URL to use will look like this:
 
     : http://rpc-token@machine.example.org:6800/rpc
 
-The main page for this program is [[http://tar-jx.bz/code/ariactl.html]]. See
-also [[http://gitweb.fperrin.net/?p=ariactl.git;a=summary][the gitweb interface]].
+On =machine.example.org=, start =aria2= with:
+
+    : aria2c --enable-rpc --rpc-secret=fasdhuklwer
+
+If =aria2= is on another machine, you'll also want =--rpc-listen-all=. In that
+case, you'll certainly want to have some access control in place to avoid
+having =aria2= listening on the public Internet.
