@@ -36,6 +36,31 @@ our %ariadlopts = ("max-download-limit" => "D/L bandwidth limit",
                    "bt-request-peer-speed-limit" => "Lower peer speed limit",
                    "cancel" => "Cancel download");
 
+# Small subclassing of Frontier::RPC to pass the user info down for each RPC
+# call
+{
+    package AriaRPC;
+    use parent 'Frontier::Client';
+
+    sub new {
+	my $class = shift;
+	my $url = new URI(shift);
+	my $token = $url->userinfo;
+	$url->userinfo(undef);
+
+	my $self = Frontier::Client->new(url => $url->as_string);
+	$self->{token} = $token;
+	bless $self, $class;
+    }
+
+    sub call {
+	my $self = shift;
+	my $method = shift;
+	my @args = @_;
+	$self->SUPER::call($method, "token:$self->{token}", @args);
+    }
+}
+
 sub show_dl {
     my $dls = shift;
     if (not scalar @$dls) {
@@ -93,9 +118,9 @@ print header(),
 
 my $urlfilename = dirname($ENV{"SCRIPT_FILENAME"}) . "/ariaurl.txt";
 open my $urlfile, "<", $urlfilename or clean_die("Could not open the URL file at $urlfilename: $!.");
-my $ariaurl = <$urlfile>;
+my $ariaurl = new URI(<$urlfile>);
 close $urlfile;
-my $ariactl = Frontier::Client->new(url => $ariaurl);
+my $ariactl = new AriaRPC($ariaurl);
 
 my $v;
 eval {

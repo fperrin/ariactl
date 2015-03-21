@@ -51,7 +51,7 @@ server.
 
 The URL to use will look like this:
 
-    : http://user:password@machine.example.org:6800/rpc
+    : http://rpc-token@machine.example.org:6800/rpc
 
 The main page for this program is [[http://tar-jx.bz/code/ariactl.html]]. See
 also [[http://gitweb.fperrin.net/?p=ariactl.git;a=summary][the gitweb interface]].
