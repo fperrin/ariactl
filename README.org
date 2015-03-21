@@ -41,9 +41,6 @@ communicate in XML-RPC with an instance of [[http://aria2.sourceforge.net/][=ari
 It provides a webpage to add downloads to =aria2=, get the list of finished
 and waiting downloads, and change some options of =aria2=.
 
-Note in this script the use of =Net::INET6Glue=, in order to allow
-contacting =aria2= over IPv6.
-
 Installation is easy: stuff =arialctl.pl= and the two CSS / JS files in a
 directory under the control of =mod_perl=. The script reads a text file,
 =ariaurl.txt=, in order to find the URL to use to contact =aria2='s XML-RPC

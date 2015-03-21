@@ -11,7 +11,6 @@ use File::Basename;
 use Number::Format qw/:subs/;
 use Tie::IxHash;
 
-use Net::INET6Glue::INET_is_INET6;
 use Frontier::Client;
 
 use Data::Dumper;
